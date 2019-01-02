@@ -284,6 +284,12 @@ void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader
 	}
 }
 
+//=============================================================================
+// ポジション設定処理
+// x : x座標
+// y : y座標
+// z : z座標
+//=============================================================================
 void Cube::SetPosition(float x, float y, float z)
 {
 	_position.x = x;
