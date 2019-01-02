@@ -50,7 +50,7 @@ struct Vertex3D
 
 struct ConstantBuffer
 {
-	XMMATRIX World;
-	XMMATRIX WorldViewProjection;
-	XMFLOAT3 DirectionalLight;
+	XMFLOAT4X4 World;
+	XMFLOAT4X4 WorldViewProjection;
+	XMFLOAT4 DirectionalLight;
 };

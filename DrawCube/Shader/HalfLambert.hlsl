@@ -29,11 +29,10 @@ void VertexShaderPolygon( in  float4 inPosition : POSITION0,
 	outPosition = mul( inPosition, WorldViewProjection );
 	outTexCoord = inTexCoord;
 
-	normal = mul(inNormal, World);
-	normal = normalize(normal);
+	normal = normalize(inNormal);
 
-	color = saturate(dot(normal,-DirectionalLight)) * 0.5f + 0.5f;
-	outColor = inColor * color;
+	color = saturate(dot(normal, -(float3)DirectionalLight)) *0.5f + 0.5f;
+	outColor =  color * inColor;
 	outColor.a = 1.0f;
 }
 

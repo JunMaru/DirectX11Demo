@@ -15,6 +15,7 @@ Cube::Cube()
 {
 	_pVertexBuffer = nullptr;
 	_pShaderResView = nullptr;
+	_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	_rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
@@ -253,6 +254,12 @@ void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader
 
 	world = XMMatrixIdentity();
 	world = XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.y, _rotation.z);
+	XMMATRIX invWorld;
+	invWorld = XMMatrixIdentity();
+	XMVECTOR tempVec = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	invWorld = XMMatrixInverse(&tempVec, world);
+
+	world = world * XMMatrixTranslation(_position.x, _position.y, _position.z);
 
 	view = XMMatrixLookAtLH(XMVectorSet(0.0f, 50.0f, -40.0f, 1.0f),
 		XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f),
@@ -260,11 +267,13 @@ void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader
 	projection = XMMatrixPerspectiveFovLH(1.0f, (float)ScreenWidth / (float)ScreenHeight, 0.1f, 100.0f);
 	worldViewProjection = world * view * projection;
 
-	XMVECTOR light = XMVector3Normalize(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
+	XMVECTOR light = XMVector3Normalize(XMVectorSet(0.0f, -1.0f, 1.0f, 0.0f));
+	XMVECTOR localLight = XMVector3TransformCoord(light, invWorld);
+	localLight = XMVector3Normalize(localLight);
 	ConstantBuffer cb;
-	cb.World = XMMatrixTranspose(world);
-	cb.WorldViewProjection = XMMatrixTranspose(worldViewProjection);
-	cb.DirectionalLight = XMFLOAT3(light.m128_f32[0], light.m128_f32[1], light.m128_f32[2]);
+	XMStoreFloat4x4(&cb.World, XMMatrixTranspose(world));
+	XMStoreFloat4x4(&cb.WorldViewProjection, XMMatrixTranspose(worldViewProjection));
+	XMStoreFloat4(&cb.DirectionalLight, localLight);
 	pContext->UpdateSubresource(pConstantBuffer, 0, nullptr, &cb, 0, 0);
 	pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 
@@ -273,4 +282,11 @@ void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader
 	{
 		pContext->Draw(4, nIndex * 4);
 	}
+}
+
+void Cube::SetPosition(float x, float y, float z)
+{
+	_position.x = x;
+	_position.y = y;
+	_position.z = z;
 }

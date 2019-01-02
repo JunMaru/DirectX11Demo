@@ -47,6 +47,14 @@ public:
 	void Draw(ID3D11DeviceContext * pContext, ID3D11VertexShader * pVertexShader, ID3D11PixelShader * pPixelShader,
 		ID3D11InputLayout * pLayout, ID3D11Buffer * pConstantBuffer) override;
 
+	//=============================================================================
+	// ポジション設定処理
+	// x : x座標
+	// y : y座標
+	// z : z座標
+	//=============================================================================
+	void SetPosition(float x, float y, float z);
+
 private:
 	//=============================================================================
 	// コンストラクタ
@@ -67,5 +75,6 @@ private:
 
 	ID3D11ShaderResourceView* _pShaderResView;
 	ID3D11Buffer* _pVertexBuffer;
+	XMFLOAT3 _position;
 	XMFLOAT3 _rotation;
 };

@@ -17,8 +17,9 @@ SceneManager::SceneManager()
 {
 	_pRenderer = nullptr;
 	_pCube = nullptr;
+	_pCube2 = nullptr;
 
-	_drawableObjects.reserve(1);
+	_drawableObjects.reserve(2);
 }
 
 //=============================================================================
@@ -48,8 +49,13 @@ HRESULT SceneManager::Init(Renderer* pRenderer)
 {
 	_pRenderer = pRenderer;
 	_pCube = Cube::CreateInstance(_pRenderer->GetDevice());
-
+	_pCube->SetPosition(20.0f, 0.0f, 0.0f);
 	_drawableObjects.push_back(_pCube);
+
+	_pCube2 = Cube::CreateInstance(_pRenderer->GetDevice());
+	_pCube2->SetPosition(-20.0f, 0.0f, 0.0f);
+	_drawableObjects.push_back(_pCube2);
+
 	return S_OK;
 }
 
@@ -59,6 +65,7 @@ HRESULT SceneManager::Init(Renderer* pRenderer)
 void SceneManager::Uninit()
 {
 	SafeUninitAndDelete(_pCube);
+	SafeUninitAndDelete(_pCube2);
 }
 
 //=============================================================================
@@ -67,6 +74,7 @@ void SceneManager::Uninit()
 void SceneManager::Update()
 {
 	_pCube->Update();
+	_pCube2->Update();
 }
 
 //=============================================================================

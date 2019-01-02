@@ -62,5 +62,6 @@ private:
 
 	std::vector<IDrawable*> _drawableObjects;
 	Cube* _pCube;
+	Cube* _pCube2;
 	Renderer* _pRenderer;
 };
