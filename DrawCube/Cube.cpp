@@ -230,9 +230,10 @@ void Cube::Update(void)
 // pPixelShader : ピクセルシェーダー
 // pLayout : 頂点レイアウト
 // pConstantBuffer : 定数バッファ
+// viewProjection : ビュープロジェクション行列
 //=============================================================================
 void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader,
-	ID3D11PixelShader* pPixelShader, ID3D11InputLayout* pLayout, ID3D11Buffer* pConstantBuffer)
+	ID3D11PixelShader* pPixelShader, ID3D11InputLayout* pLayout, ID3D11Buffer* pConstantBuffer, const XMMATRIX& viewProjection)
 {
 	// 頂点バッファ設定
 	UINT stride = sizeof(Vertex3D);
@@ -250,7 +251,7 @@ void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader
 	pContext->PSSetShader(pPixelShader, nullptr, 0);
 
 	// マトリクス設定
-	XMMATRIX world, view, projection, worldViewProjection;
+	XMMATRIX world, worldViewProjection;
 
 	world = XMMatrixIdentity();
 	world = XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.y, _rotation.z);
@@ -261,11 +262,7 @@ void Cube::Draw(ID3D11DeviceContext* pContext, ID3D11VertexShader* pVertexShader
 
 	world = world * XMMatrixTranslation(_position.x, _position.y, _position.z);
 
-	view = XMMatrixLookAtLH(XMVectorSet(0.0f, 50.0f, -40.0f, 1.0f),
-		XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f),
-		XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-	projection = XMMatrixPerspectiveFovLH(1.0f, (float)ScreenWidth / (float)ScreenHeight, 0.1f, 100.0f);
-	worldViewProjection = world * view * projection;
+	worldViewProjection = world * viewProjection;
 
 	XMVECTOR light = XMVector3Normalize(XMVectorSet(0.0f, -1.0f, 1.0f, 0.0f));
 	XMVECTOR localLight = XMVector3TransformCoord(light, invWorld);

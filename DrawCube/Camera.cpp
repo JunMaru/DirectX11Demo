@@ -1,92 +1,77 @@
 ﻿//*****************************************************************************
-// シーンマネージャクラス[SceneManager.cpp]
+// カメラクラス[Camera.cpp]
 //*****************************************************************************
 
 //*****************************************************************************
 // インクルード
 //*****************************************************************************
-#include "SceneManager.h"
-#include "Renderer.h"
-#include "Cube.h"
 #include "Camera.h"
-#include "Utility.h"
 
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-SceneManager::SceneManager()
+Camera::Camera()
 {
-	_pRenderer = nullptr;
-	_pCube = nullptr;
-	_pCube2 = nullptr;
-	_pCamera = nullptr;   
-
-	_drawableObjects.reserve(2);
 }
 
 //=============================================================================
 // デストラクタ
 //=============================================================================
-SceneManager::~SceneManager()
+Camera::~Camera()
 {
 }
 
 //=============================================================================
 // インスタンス生成処理
-// pRenderer : 描画に使用するレンダラー
+// position : カメラ座標
+// focusPoint : 注視点
 //=============================================================================
-SceneManager* SceneManager::CreateInstance(Renderer* pRenderer)
+Camera * Camera::CreateInstance(XMFLOAT3 position, XMFLOAT3 focusPoint)
 {
-	SceneManager* pSceneManager = new SceneManager();
-	pSceneManager->Init(pRenderer);
+	Camera* pCamera = new Camera();
+	pCamera->Init(position, focusPoint);
 
-	return pSceneManager;
+	return pCamera;
 }
 
 //=============================================================================
 // 初期化処理
-// pRenderer : 描画に使用するレンダラー
+// position : カメラ座標
+// focusPoint : 注視点
 //=============================================================================
-HRESULT SceneManager::Init(Renderer* pRenderer)
+void Camera::Init(XMFLOAT3 position, XMFLOAT3 focusPoint)
 {
-	_pRenderer = pRenderer;
-	_pCube = Cube::CreateInstance(_pRenderer->GetDevice());
-	_pCube->SetPosition(20.0f, 0.0f, 0.0f);
-	_drawableObjects.push_back(_pCube);
-
-	_pCube2 = Cube::CreateInstance(_pRenderer->GetDevice());
-	_pCube2->SetPosition(-20.0f, 0.0f, 0.0f);
-	_drawableObjects.push_back(_pCube2);
-
-	_pCamera = Camera::CreateInstance(XMFLOAT3(0.0f, 50.0f, -40.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-	return S_OK;
+	_position = position;
+	_focusPoint = focusPoint;
 }
 
 //=============================================================================
 // 終了処理
 //=============================================================================
-void SceneManager::Uninit()
+void Camera::Uninit()
 {
-	SafeUninitAndDelete(_pCube);
-	SafeUninitAndDelete(_pCube2);
-	SafeUninitAndDelete(_pCamera);
 }
 
 //=============================================================================
 // 更新処理
 //=============================================================================
-void SceneManager::Update()
+void Camera::Update()
 {
-	_pCube->Update();
-	_pCube2->Update();
-	_pCamera->Update();
 }
 
 //=============================================================================
-// 描画処理
+// ビュープロジェクション行列の取得処理
+// return : ビュープロジェクション行列
 //=============================================================================
-void SceneManager::Draw()
+XMMATRIX Camera::GetViewProjectionMatrix()
 {
-	_pRenderer->Draw(_drawableObjects, _pCamera->GetViewProjectionMatrix());
+	XMMATRIX view, projection;
+	view = XMMatrixLookAtLH(
+		XMVectorSet(_position.x, _position.y, _position.z, 1.0f),
+		XMVectorSet(_focusPoint.x, _focusPoint.y, _focusPoint.z, 1.0f),
+		XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+
+	projection = XMMatrixPerspectiveFovLH(1.0f, (float)ScreenWidth / (float)ScreenHeight, 0.1f, 100.0f);
+
+	return view * projection;
 }

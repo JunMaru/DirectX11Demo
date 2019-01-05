@@ -7,7 +7,7 @@
 // インクルード
 //*****************************************************************************
 #include "main.h"
-#include "IDrawable.h"
+#include "Interface/IDrawable.h"
 
 //*****************************************************************************
 // クラス宣言
@@ -43,9 +43,10 @@ public:
 	// pPixelShader : ピクセルシェーダー
 	// pLayout : 頂点レイアウト
 	// pConstantBuffer : 定数バッファ
+	// viewProjection : ビュープロジェクション行列
 	//=============================================================================
 	void Draw(ID3D11DeviceContext * pContext, ID3D11VertexShader * pVertexShader, ID3D11PixelShader * pPixelShader,
-		ID3D11InputLayout * pLayout, ID3D11Buffer * pConstantBuffer) override;
+		ID3D11InputLayout * pLayout, ID3D11Buffer * pConstantBuffer, const XMMATRIX& viewProjection) override;
 
 	//=============================================================================
 	// ポジション設定処理

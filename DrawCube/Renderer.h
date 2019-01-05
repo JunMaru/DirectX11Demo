@@ -43,8 +43,9 @@ public:
 	//=============================================================================
 	// 描画処理
 	// drawableObjects : 描画可能オブジェクト配列
+	// viewPorjection : 描画する際のビュープロジェクション行列
 	//=============================================================================
-	void Draw(const std::vector<IDrawable*>& drawableObjects);
+	void Draw(const std::vector<IDrawable*>& drawableObjects, const XMMATRIX& viewPorjection);
 
 
 	//=============================================================================

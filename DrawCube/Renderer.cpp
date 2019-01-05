@@ -8,7 +8,7 @@
 //*****************************************************************************
 #include "Renderer.h"
 #include "Utility.h"
-#include "IDrawable.h"
+#include "Interface/IDrawable.h"
 
 //=============================================================================
 // コンストラクタ
@@ -228,8 +228,9 @@ void Renderer::Uninit()
 //=============================================================================
 // 描画処理
 // drawableObjects : 描画可能オブジェクト配列
+// viewProjection : ビュープロジェクション行列
 //=============================================================================
-void Renderer::Draw(const std::vector<IDrawable*>& drawableObjects)
+void Renderer::Draw(const std::vector<IDrawable*>& drawableObjects, const XMMATRIX& viewProjection)
 {
 	// バックバッファクリア
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -238,7 +239,7 @@ void Renderer::Draw(const std::vector<IDrawable*>& drawableObjects)
 
 	for (IDrawable* pDrawableObject : drawableObjects)
 	{
-		pDrawableObject->Draw(_pImmediateContext, _pVertexShader, _pPixelShader, _pVertexLayout, _pConstantBuffer);
+		pDrawableObject->Draw(_pImmediateContext, _pVertexShader, _pPixelShader, _pVertexLayout, _pConstantBuffer, viewProjection);
 	}
 
 	_pSwapChain->Present(0, 0);

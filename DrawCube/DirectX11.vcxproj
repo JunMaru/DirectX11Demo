@@ -151,14 +151,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="IDrawable.h" />
+    <ClInclude Include="Interface\IDrawable.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
